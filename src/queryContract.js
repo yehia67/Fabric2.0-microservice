@@ -8,7 +8,7 @@
 const {Wallets, Gateway} = require('fabric-network');
 const path = require('path');
 const fs = require('fs');
-async function main() {
+async function main(contractName,functionName,args) {
   try {
     // Create a new file system based wallet for managing identities.
     const walletPath = path.join(process.cwd(), 'Org1');
@@ -42,10 +42,10 @@ async function main() {
     // Get the network (channel) our contract is deployed to.
     const network = await gateway.getNetwork('mychannel');
     // Get the contract from the network.
-    const contract = network.getContract('boilerplate');
+    const contract = network.getContract(contractName);
     // Submit the specified transaction.
-    await contract.submitTransaction('createMyAsset', '002', 'bsmlah');
-    console.log(`Transaction has been submitted`);
+   const result =  await contract.evaluateTransaction(functionName, ...args);
+   console.log(`Transaction has been evaluated, result is: ${result.toString()}`);    
     // Disconnect from the gateway.
     await gateway.disconnect();
   } catch (error) {
@@ -54,4 +54,4 @@ async function main() {
 }
 }
 
-main();
+main('boilerplate','readMyAsset',['004']);
